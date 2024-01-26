@@ -1,0 +1,32 @@
+name: 'go test darwin'
+
+on: [push]
+
+env:
+  DYLD_LIBRARY_PATH: /opt/senzing/g2/lib:/opt/senzing/g2/lib/macos
+  LD_LIBRARY_PATH: /opt/senzing/g2/lib:/opt/senzing/g2/lib/macos
+
+permissions:
+  contents: read
+
+jobs:
+  go-test-darwin:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        go: ["1.21"]
+        os: [macos-latest]
+    name: "go test with OS: ${{ matrix.os }}; Go: ${{ matrix.go }}"
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup go
+        uses: actions/setup-go@v5
+        with:
+          go-version: ${{ matrix.go }}
+
+      - name: Run go test
+        run: go test -v -p 1 ./...
