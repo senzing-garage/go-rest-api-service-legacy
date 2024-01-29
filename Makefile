@@ -15,9 +15,6 @@ PROGRAM_NAME := $(shell basename `git rev-parse --show-toplevel`)
 MAKEFILE_PATH := $(abspath $(firstword $(MAKEFILE_LIST)))
 MAKEFILE_DIRECTORY := $(shell dirname $(MAKEFILE_PATH))
 TARGET_DIRECTORY := $(MAKEFILE_DIRECTORY)/target
-DOCKER_CONTAINER_NAME := $(PROGRAM_NAME)
-DOCKER_IMAGE_NAME := senzing/$(PROGRAM_NAME)
-DOCKER_BUILD_IMAGE_NAME := $(DOCKER_IMAGE_NAME)-build
 BUILD_VERSION := $(shell git describe --always --tags --abbrev=0 --dirty  | sed 's/v//')
 BUILD_TAG := $(shell git describe --always --tags --abbrev=0  | sed 's/v//')
 BUILD_ITERATION := $(shell git log $(BUILD_TAG)..HEAD --oneline | wc -l | sed 's/^ *//')
@@ -34,8 +31,6 @@ GO_ARCH = $(word 2, $(GO_OSARCH))
 # Conditional assignment. ('?=')
 # Can be overridden with "export"
 # Example: "export LD_LIBRARY_PATH=/path/to/my/senzing/g2/lib"
-
-LD_LIBRARY_PATH ?= /opt/senzing/g2/lib
 
 # Export environment variables.
 
@@ -71,7 +66,6 @@ dependencies:
 
 # -----------------------------------------------------------------------------
 # Build
-#  - docker-build: https://docs.docker.com/engine/reference/commandline/build/
 # -----------------------------------------------------------------------------
 
 PLATFORMS := darwin/amd64 darwin/arm64 linux/amd64 linux/arm64 windows/amd64 windows/arm64
@@ -82,34 +76,6 @@ $(PLATFORMS):
 
 .PHONY: build
 build: build-osarch-specific
-
-
-.PHONY: build-all $(PLATFORMS)
-build-all: $(PLATFORMS)
-	@mv $(TARGET_DIRECTORY)/windows-amd64/$(PROGRAM_NAME) $(TARGET_DIRECTORY)/windows-amd64/$(PROGRAM_NAME).exe
-	@mv $(TARGET_DIRECTORY)/windows-arm64/$(PROGRAM_NAME) $(TARGET_DIRECTORY)/windows-arm64/$(PROGRAM_NAME).exe
-
-
-.PHONY: build-scratch
-build-scratch:
-	@GOOS=linux \
-	GOARCH=amd64 \
-	CGO_ENABLED=0 \
-	go build \
-		-a \
-		-installsuffix cgo \
-		-ldflags "-s -w" \
-		-o $(GO_PACKAGE_NAME)
-	@mkdir -p $(TARGET_DIRECTORY)/scratch || true
-	@mv $(GO_PACKAGE_NAME) $(TARGET_DIRECTORY)/scratch
-
-
-.PHONY: docker-build
-docker-build:
-	@docker build \
-		--tag $(DOCKER_IMAGE_NAME) \
-		--tag $(DOCKER_IMAGE_NAME):$(BUILD_VERSION) \
-		.
 
 # -----------------------------------------------------------------------------
 # Test
@@ -122,38 +88,8 @@ test: test-osarch-specific
 # Run
 # -----------------------------------------------------------------------------
 
-.PHONY: docker-run
-docker-run:
-	@docker run \
-		--interactive \
-		--rm \
-		--tty \
-		--name $(DOCKER_CONTAINER_NAME) \
-		$(DOCKER_IMAGE_NAME)
-
-
 .PHONY: run
 run: run-osarch-specific
-
-# -----------------------------------------------------------------------------
-# Package
-# -----------------------------------------------------------------------------
-
-.PHONY: docker-build-package
-docker-build-package:
-	@docker build \
-		--build-arg BUILD_ITERATION=$(BUILD_ITERATION) \
-		--build-arg BUILD_VERSION=$(BUILD_VERSION) \
-		--build-arg GO_PACKAGE_NAME=$(GO_PACKAGE_NAME) \
-		--build-arg PROGRAM_NAME=$(PROGRAM_NAME) \
-		--no-cache \
-		--file package.Dockerfile \
-		--tag $(DOCKER_BUILD_IMAGE_NAME) \
-		.
-
-
-.PHONY: package
-package: package-osarch-specific
 
 # -----------------------------------------------------------------------------
 # Utility targets

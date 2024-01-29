@@ -19,3 +19,17 @@
 
 # Go workspace file
 go.work
+
+# macOS artifacts
+.DS_STORE
+
+# Visual Studio code
+.vscode
+*.code-workspace
+.history
+
+# Makefile
+target/
+
+.coverage
+
