@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"os"
 	"os/exec"
 )
 
@@ -35,8 +34,6 @@ func init() {
 
 // --- xxxxxx -----------------------------------------------------------------
 
-// --- xxxxxx -----------------------------------------------------------------
-
 func handleRequest(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Printf(">>>>>> r = %+v\n", r)
@@ -45,7 +42,7 @@ func handleRequest(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Printf(">>>>>> r.URL = %+v\n", r.URL)
 
-	proxyUrl := fmt.Sprintf("http://localhost:8250/%s", r.URL)
+	proxyUrl := fmt.Sprintf("http://localhost:8250%s", r.URL)
 
 	fmt.Printf(">>>>>> proxyURL = %s\n", proxyUrl)
 
@@ -91,12 +88,12 @@ func (restApiServiceLegacyImpl *RestApiServiceLegacyImpl) Handler(ctx context.Co
 
 	// Start Java
 
-	os.Setenv("PATH", "/home/sdk/jdk-11.0.16/bin:/home/temp/jtreg/bin:$PATH")
-	cmd, err := exec.Command("java", "-version").CombinedOutput()
+	// os.Setenv("PATH", "/home/sdk/jdk-11.0.16/bin:/home/temp/jtreg/bin:$PATH")
+	cmd, err := exec.Command("java", "-jar", "/tmp/senzing-poc-server.jar").CombinedOutput()
 	if err != nil {
-		fmt.Println(err)
+		fmt.Println(">>>>>> Java Error:", err)
 	}
-	fmt.Println(string(cmd))
+	fmt.Println(">>>>>>>>>>>>>>", string(cmd))
 
 	// Proxy HTTP requests.
 
