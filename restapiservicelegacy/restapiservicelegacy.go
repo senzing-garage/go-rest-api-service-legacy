@@ -45,7 +45,7 @@ func handleRequest(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Printf(">>>>>> r.URL = %+v\n", r.URL)
 
-	proxyUrl := fmt.Sprintf("http://localhost:8260/%s", r.URL.RawPath)
+	proxyUrl := fmt.Sprintf("http://localhost:8250/%s", r.URL)
 
 	fmt.Printf(">>>>>> proxyURL = %s\n", proxyUrl)
 
