@@ -32,6 +32,15 @@ func init() {
 	// Here, you can customize the transport, e.g., set timeouts or enable/disable keep-alive
 }
 
+func runJava() {
+	// os.Setenv("PATH", "/home/sdk/jdk-11.0.16/bin:/home/temp/jtreg/bin:$PATH")
+	cmd, err := exec.Command("java", "-jar", "/tmp/senzing-poc-server.jar").CombinedOutput()
+	if err != nil {
+		fmt.Println(">>>>>> Java Error:", err)
+	}
+	fmt.Println(">>>>>>>>>>>>>>", string(cmd))
+}
+
 // --- xxxxxx -----------------------------------------------------------------
 
 func handleRequest(w http.ResponseWriter, r *http.Request) {
@@ -88,12 +97,7 @@ func (restApiServiceLegacyImpl *RestApiServiceLegacyImpl) Handler(ctx context.Co
 
 	// Start Java
 
-	// os.Setenv("PATH", "/home/sdk/jdk-11.0.16/bin:/home/temp/jtreg/bin:$PATH")
-	cmd, err := exec.Command("java", "-jar", "/tmp/senzing-poc-server.jar").CombinedOutput()
-	if err != nil {
-		fmt.Println(">>>>>> Java Error:", err)
-	}
-	fmt.Println(">>>>>>>>>>>>>>", string(cmd))
+	go runJava()
 
 	// Proxy HTTP requests.
 
