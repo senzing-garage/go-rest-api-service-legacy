@@ -2,10 +2,7 @@ module github.com/senzing-garage/go-rest-api-service-legacy
 
 go 1.21
 
-require (
-	github.com/senzing-garage/go-common v0.4.0
-	github.com/stretchr/testify v1.8.4
-)
+require github.com/stretchr/testify v1.8.4
 
 require (
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc // indirect
