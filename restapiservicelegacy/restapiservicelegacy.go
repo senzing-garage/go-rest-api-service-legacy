@@ -34,15 +34,9 @@ var (
 
 func (restApiServiceLegacyImpl *RestApiServiceLegacyImpl) handleRequest(w http.ResponseWriter, r *http.Request) {
 
-	fmt.Printf(">>>>>> r = %+v\n", r)
-	fmt.Printf(">>>>>> r.URL = %+v\n", r.URL)
+	// Create a new HTTP request with the same method, URL, and body as the original request.
 
 	proxyUrl := fmt.Sprintf(restApiServiceLegacyImpl.ProxyTemplate, r.URL)
-
-	fmt.Printf(">>>>>> proxyURL = %s\n", proxyUrl)
-
-	// Create a new HTTP request with the same method, URL, and body as the original request
-
 	proxyReq, err := http.NewRequest(r.Method, proxyUrl, r.Body)
 	if err != nil {
 		http.Error(w, "Error creating proxy request", http.StatusInternalServerError)
