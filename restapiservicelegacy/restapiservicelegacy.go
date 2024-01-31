@@ -86,9 +86,9 @@ func (restApiServiceLegacyImpl *RestApiServiceLegacyImpl) handleRequest(w http.R
 // Run Java jar file at most once.
 func (restApiServiceLegacyImpl *RestApiServiceLegacyImpl) runJava() {
 	restApiServiceSyncOnce.Do(func() {
-		err := exec.Command("java", "-jar", restApiServiceLegacyImpl.JarFile)
+		cmd, err := exec.Command("java", "-jar", restApiServiceLegacyImpl.JarFile).CombinedOutput()
 		if err != nil {
-			panic(err)
+			panic(fmt.Sprintf("%v: %v", cmd, err))
 		}
 	})
 }
