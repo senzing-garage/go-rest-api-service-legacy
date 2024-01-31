@@ -32,9 +32,10 @@ var (
 // Internal methods
 // ----------------------------------------------------------------------------
 
+// Handle an HTTP request
 func (restApiServiceLegacyImpl *RestApiServiceLegacyImpl) handleRequest(w http.ResponseWriter, r *http.Request) {
 
-	// Create a new HTTP request with the same method, URL, and body as the original request.
+	// Create a new HTTP request to the proxied server with the same method and body as the original request.
 
 	proxyUrl := fmt.Sprintf(restApiServiceLegacyImpl.ProxyTemplate, r.URL)
 	proxyReq, err := http.NewRequest(r.Method, proxyUrl, r.Body)
