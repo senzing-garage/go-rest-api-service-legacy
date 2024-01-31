@@ -59,7 +59,12 @@ func (restApiServiceLegacyImpl *RestApiServiceLegacyImpl) handleRequest(w http.R
 		http.Error(w, "Error sending proxy request", http.StatusInternalServerError)
 		return
 	}
-	defer resp.Body.Close()
+	defer func() {
+		err := resp.Body.Close()
+		if err != nil {
+			panic(err)
+		}
+	}()
 
 	// Copy the headers from the proxy response to the original response.
 
@@ -85,7 +90,7 @@ func (restApiServiceLegacyImpl *RestApiServiceLegacyImpl) handleRequest(w http.R
 // Run Java jar file at most once.
 func (restApiServiceLegacyImpl *RestApiServiceLegacyImpl) runJava() {
 	restApiServiceSyncOnce.Do(func() {
-		cmd, err := exec.Command("java", "-jar", restApiServiceLegacyImpl.JarFile).CombinedOutput() //nolint:gosec
+		cmd, err := exec.Command("java", "-jar", restApiServiceLegacyImpl.JarFile).CombinedOutput() // #nosec 204
 		if err != nil {
 			panic(fmt.Sprintf("%v: %v", cmd, err))
 		}
