@@ -75,13 +75,17 @@ func (restApiServiceLegacyImpl *RestApiServiceLegacyImpl) handleRequest(w http.R
 
 	// Copy the body of the proxy response to the original response.
 
-	io.Copy(w, resp.Body)
+	_, err = io.Copy(w, resp.Body)
+	if err != nil {
+		http.Error(w, "Could not copy HTTP body", http.StatusInternalServerError)
+		return
+	}
 }
 
 // Run Java jar file at most once.
 func (restApiServiceLegacyImpl *RestApiServiceLegacyImpl) runJava() {
 	restApiServiceSyncOnce.Do(func() {
-		cmd, err := exec.Command("java", "-jar", restApiServiceLegacyImpl.JarFile).CombinedOutput()
+		cmd, err := exec.Command("java", "-jar", restApiServiceLegacyImpl.JarFile).CombinedOutput() //nolint:gosec
 		if err != nil {
 			panic(fmt.Sprintf("%v: %v", cmd, err))
 		}
