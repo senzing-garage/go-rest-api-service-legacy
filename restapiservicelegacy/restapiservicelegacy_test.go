@@ -9,7 +9,6 @@ import (
 
 var (
 	senzingRestServiceSingleton RestApiServiceLegacy
-	debug                       bool = false
 )
 
 // ----------------------------------------------------------------------------

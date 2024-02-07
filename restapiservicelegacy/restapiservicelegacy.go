@@ -5,8 +5,6 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"os/exec"
-	"sync"
 )
 
 // ----------------------------------------------------------------------------
@@ -25,7 +23,7 @@ type RestApiServiceLegacyImpl struct {
 // ----------------------------------------------------------------------------
 
 var (
-	restApiServiceSyncOnce sync.Once
+// restApiServiceSyncOnce sync.Once
 )
 
 // ----------------------------------------------------------------------------
@@ -88,14 +86,14 @@ func (restApiServiceLegacyImpl *RestApiServiceLegacyImpl) handleRequest(w http.R
 }
 
 // Run Java jar file at most once.
-func (restApiServiceLegacyImpl *RestApiServiceLegacyImpl) runJava() {
-	restApiServiceSyncOnce.Do(func() {
-		cmd, err := exec.Command("java", "-jar", restApiServiceLegacyImpl.JarFile).CombinedOutput() // #nosec 204
-		if err != nil {
-			panic(fmt.Sprintf("%v: %v", cmd, err))
-		}
-	})
-}
+// func (restApiServiceLegacyImpl *RestApiServiceLegacyImpl) runJava() {
+// 	restApiServiceSyncOnce.Do(func() {
+// 		cmd, err := exec.Command("java", "-jar", restApiServiceLegacyImpl.JarFile).CombinedOutput() // #nosec 204
+// 		if err != nil {
+// 			panic(fmt.Sprintf("%v: %v", cmd, err))
+// 		}
+// 	})
+// }
 
 // ----------------------------------------------------------------------------
 // Public methods
@@ -105,7 +103,7 @@ func (restApiServiceLegacyImpl *RestApiServiceLegacyImpl) Handler(ctx context.Co
 
 	// Run Java jar file.
 
-	go restApiServiceLegacyImpl.runJava()
+	// go restApiServiceLegacyImpl.runJava()
 
 	// Proxy HTTP requests.
 
