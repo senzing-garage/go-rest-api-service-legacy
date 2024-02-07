@@ -5,8 +5,6 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"os/exec"
-	"sync"
 )
 
 // ----------------------------------------------------------------------------
@@ -19,14 +17,6 @@ type RestApiServiceLegacyImpl struct {
 	ProxyTemplate   string
 	CustomTransport http.RoundTripper
 }
-
-// ----------------------------------------------------------------------------
-// Types
-// ----------------------------------------------------------------------------
-
-var (
-	restApiServiceSyncOnce sync.Once
-)
 
 // ----------------------------------------------------------------------------
 // Internal methods
@@ -87,25 +77,11 @@ func (restApiServiceLegacyImpl *RestApiServiceLegacyImpl) handleRequest(w http.R
 	}
 }
 
-// Run Java jar file at most once.
-func (restApiServiceLegacyImpl *RestApiServiceLegacyImpl) runJava() {
-	restApiServiceSyncOnce.Do(func() {
-		cmd, err := exec.Command("java", "-jar", restApiServiceLegacyImpl.JarFile).CombinedOutput() // #nosec 204
-		if err != nil {
-			panic(fmt.Sprintf("%v: %v", cmd, err))
-		}
-	})
-}
-
 // ----------------------------------------------------------------------------
 // Public methods
 // ----------------------------------------------------------------------------
 
 func (restApiServiceLegacyImpl *RestApiServiceLegacyImpl) Handler(ctx context.Context) *http.ServeMux {
-
-	// Run Java jar file.
-
-	go restApiServiceLegacyImpl.runJava()
 
 	// Proxy HTTP requests.
 
