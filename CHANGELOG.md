@@ -12,7 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.1.1] - 2023-02-07
 
-### Added to 0.1.1
+### Deleted in 0.1.1
 
 - Remove running Java and Senzing API server
 
