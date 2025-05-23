@@ -1,0 +1,56 @@
+{
+  // Version of the setting file.  Always 0.2
+  "version": "0.2",
+  // language - current active spelling language
+  "language": "en",
+  // words - list of words to be always considered correct
+  "words": [
+      "adipiscing",
+      "alnum",
+      "amet",
+      "andrewslotin",
+      "anotherpackage",
+      "CCLA",
+      "CODEOWNER",
+      "consectetur",
+      "creack",
+      "davecgh",
+      "difflib",
+      "Dolrw",
+      "dyld",
+      "dylib",
+      "elit",
+      "examplepackage",
+      "GOARCH",
+      "godoc",
+      "gofmt",
+      "gomod",
+      "GOPATH",
+      "gopkg",
+      "gopkg",
+      "GOPROXY",
+      "gosec",
+      "ICLA",
+      "lqez",
+      "oneline",
+      "osarch",
+      "osdetect",
+      "OSTYPE",
+      "pmezard",
+      "restapiservicelegacy",
+      "rogpeppe",
+      "securego",
+      "Senzing",
+      "SLXVDP",
+      "stackoverflow",
+      "stretchr",
+      "testcache",
+      "testdata",
+      "toplevel",
+      "Yncou",
+      "Zscifu"
+    ],
+  "ignorePaths": [
+    ".git/**"
+  ]
+}
